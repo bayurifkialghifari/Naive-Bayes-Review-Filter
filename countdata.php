@@ -4,7 +4,7 @@
 
     $connection = DB::connect();
 
-    $query = "SELECT * FROM reviews limit 1000";
+    $query = "SELECT * FROM reviews ORDER BY id ASC limit 1000";
     $result = DB::query($connection, $query);
 
     // Print out the text
@@ -18,6 +18,10 @@
 
         // Check if the rating is positive
         $isPositive = $rating > 3;
+
+        // Check field to update
+        $field = $isPositive ? 'total_positive' : 'total_negative';
+        $sumSample = DB::query($connection, "UPDATE positive_negative SET $field = $field + 1 WHERE id = 1");
 
         echo $text . '<br>';
         // Get only unique words
