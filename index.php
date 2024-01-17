@@ -26,9 +26,9 @@
         $sumArray = [];
 
         // Get total sample
-        $totalSample = DB::query($connection, "SELECT sum(total_positive) as total_positive, sum(total_negative) as total_negative FROM positive_negative")->fetch_object();
-        $negativeSample = (int)$totalSample->total_negative / (int)$sumWord->negative;
-        $positiveSample = (int)$totalSample->total_positive / (int)$sumWord->positive;
+        $totalSample = DB::query($connection, "SELECT sum(total_positive) as total_positive, sum(total_negative) as total_negative, sum(total_negative)+sum(total_positive) as total FROM positive_negative")->fetch_object();
+        $negativeSample = (int)$totalSample->total_negative / (int)$totalSample->total;
+        $positiveSample = (int)$totalSample->total_positive / (int)$totalSample->total;
 
         // Sum up
         foreach($unique as $word) {
@@ -59,9 +59,12 @@
 
         // Check positive or negative base on the sum
         foreach($sumArray as $key => $value) {
-            $totalPositive *= $value['positive'] * $positiveSample;
-            $totalNegative *= $value['negative'] * $negativeSample;
+            $totalPositive *= $value['positive'];
+            $totalNegative *= $value['negative'];
         }
+
+        $totalPositive *= $positiveSample;
+        $totalNegative *= $negativeSample;
 
         echo $_POST['review'];
         echo '<br>';
