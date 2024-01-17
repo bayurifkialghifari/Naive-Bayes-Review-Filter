@@ -27,8 +27,8 @@
 
         // Get total sample
         $totalSample = DB::query($connection, "SELECT sum(total_positive) as total_positive, sum(total_negative) as total_negative, sum(total_negative)+sum(total_positive) as total FROM positive_negative")->fetch_object();
-        $negativeSample = (int)$totalSample->total_negative / (int)$totalSample->total;
-        $positiveSample = (int)$totalSample->total_positive / (int)$totalSample->total;
+        $negativeSample = ((int)$totalSample->total_negative + 1) / ((int)$totalSample->total + 1 * 2);
+        $positiveSample = ((int)$totalSample->total_positive + 1) / ((int)$totalSample->total + 1 * 2);
 
         // Sum up
         foreach($unique as $word) {
@@ -40,10 +40,10 @@
                     $row = $wordIsExist->fetch_object();
                     
                     // Count negative
-                    $negative = (int)$row->negative / (int)$sumWord->negative;
+                    $negative = ((int)$row->negative + 1) / ((int)$sumWord->negative + 1 * 2);
 
                     // Count positive
-                    $positive = (int)$row->positive / (int)$sumWord->positive;
+                    $positive = ((int)$row->positive + 1) / ((int)$sumWord->positive + 1 * 2);
 
                     // Determine if the word is positive or negative
                     $sumArray[$word] = [
